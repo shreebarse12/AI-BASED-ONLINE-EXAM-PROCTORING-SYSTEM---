@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI Proctor | Online Exam System{% endblock %}</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            scroll-behavior: smooth;
+        }
+        /* Custom Scrollbar for a premium feel */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-[#f8fafc] text-slate-900 antialiased">
+
+    <header class="sticky top-0 z-[60]">
+        {% include 'partials/navbar.html' %}
+    </header>
+
+    <div class="flex min-h-screen">
+        {% if user.is_authenticated %}
+        <aside class="hidden md:block sticky top-[64px] h-[calc(100vh-64px)] overflow-y-auto">
+            {% include 'partials/sidebar.html' %}
+        </aside>
+        {% endif %}
+
+        <main class="flex-1 overflow-x-hidden">
+            
+            <div class="fixed top-20 right-6 z-[100] space-y-3">
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="message-toast flex items-center p-4 mb-4 text-sm rounded-2xl shadow-xl border animate-bounce
+                        {% if message.tags == 'success' %} bg-emerald-50 text-emerald-700 border-emerald-100 
+                        {% elif message.tags == 'error' %} bg-red-50 text-red-700 border-red-100 
+                        {% else %} bg-blue-50 text-blue-700 border-blue-100 {% endif %}">
+                        <i class="fa-solid {% if message.tags == 'success' %}fa-circle-check{% else %}fa-circle-info{% endif %} mr-3"></i>
+                        <span class="font-bold">{{ message }}</span>
+                        <button onclick="this.parentElement.remove()" class="ml-4 opacity-50 hover:opacity-100"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="p-6 md:p-10 fade-in">
+                <div class="max-w-7xl mx-auto">
+                    
+                    {% block content %}
+                    <div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 p-8 md:p-16 text-center">
+                        <div class="relative inline-block mb-8">
+                            <div class="absolute inset-0 bg-blue-400 blur-2xl opacity-20 rounded-full"></div>
+                            <div class="relative inline-flex items-center justify-center w-20 h-20 bg-gradient-to-tr from-blue-600 to-indigo-600 text-white rounded-3xl shadow-xl">
+                                <i class="fa-solid fa-shield-halved text-3xl"></i>
+                            </div>
+                        </div>
+                        
+                        <h2 class="text-4xl font-extrabold text-slate-800 mb-4 tracking-tight">AI Proctoring <span class="text-blue-600">Reimagined</span></h2>
+                        <p class="text-slate-500 max-w-lg mx-auto mb-10 text-lg">
+                            Secure, transparent, and intelligent examination management for modern education.
+                        </p>
+
+                        {% if not user.is_authenticated %}
+                            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                                <a href="{% url 'login' %}" class="w-full sm:w-auto px-8 py-4 bg-slate-900 text-white font-bold rounded-2xl hover:bg-black transition shadow-lg shadow-slate-200">
+                                    Login to Portal
+                                </a>
+                                <div class="text-slate-400 font-medium px-4">or</div>
+                                <div class="text-blue-600 font-bold cursor-pointer hover:underline">Contact Administrator</div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% endblock %}
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="bg-white border-t border-slate-100 py-8 text-center">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm text-slate-400">
+            <p>&copy; 2026 AI Exam Proctoring System. All rights reserved.</p>
+            <div class="flex space-x-6 mt-4 md:mt-0">
+                <a href="#" class="hover:text-blue-600 transition">Terms</a>
+                <a href="#" class="hover:text-blue-600 transition">Privacy</a>
+                <a href="#" class="hover:text-blue-600 transition">Security</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Auto-hide messages after 5 seconds
+        setTimeout(() => {
+            const toasts = document.querySelectorAll('.message-toast');
+            toasts.forEach(t => t.style.display = 'none');
+        }, 5000);
+    </script>
+</body>
+</html>

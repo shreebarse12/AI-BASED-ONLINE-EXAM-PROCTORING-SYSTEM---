@@ -1,0 +1,101 @@
+<nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200 px-6 py-3 shadow-sm">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+
+        <!-- Logo -->
+        <a href="/" class="flex items-center space-x-3 group">
+            <div class="bg-blue-500 p-2 rounded-xl group-hover:scale-110 shadow-md shadow-blue-500/20 transition-all duration-300">
+                <i class="fa-solid fa-microchip text-white text-xl"></i>
+            </div>
+            <div class="flex flex-col">
+                <h2 class="text-xl font-black text-gray-800 leading-none">
+                    AI <span class="text-blue-600">PROCTOR</span>
+                </h2>
+                <span class="text-[9px] font-bold text-gray-500 tracking-widest uppercase mt-1">Security Engine</span>
+            </div>
+        </a>
+
+        <!-- Search bar (Admins & Teachers Only) -->
+        {% if user.role != 'STUDENT' and user.is_authenticated %}
+        <div class="hidden lg:flex flex-1 max-w-md mx-8">
+            <div class="relative w-full">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-3 text-gray-400 text-xs"></i>
+                <input 
+                    type="text"
+                    placeholder="Search students, exams..."
+                    class="w-full bg-gray-100 border border-gray-300 rounded-2xl py-2 pl-10 pr-4 text-sm text-gray-700 
+                           focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                >
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Right side -->
+        {% if user.is_authenticated %}
+        <div class="flex items-center space-x-4">
+
+            <!-- Clock -->
+            <div class="hidden md:flex items-center space-x-3 bg-gray-100 border border-gray-300 px-4 py-1.5 rounded-2xl shadow-sm">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span id="clock" class="text-xs font-mono font-bold text-gray-700">00:00:00 AM</span>
+            </div>
+
+            <!-- Divider -->
+            <div class="h-6 w-px bg-gray-300 mx-2 hidden sm:block"></div>
+
+            <!-- Profile -->
+            <div class="flex items-center space-x-3">
+
+                <!-- Name & Role -->
+                <div class="flex flex-col items-end hidden sm:flex">
+                    <span class="text-sm font-bold text-gray-800">{{ user.username }}</span>
+
+                    <span class="mt-1 px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest border
+                        {% if user.role == 'ADMIN' %} bg-red-100 text-red-600 border-red-300
+                        {% elif user.role == 'TEACHER' %} bg-blue-100 text-blue-600 border-blue-300
+                        {% else %} bg-emerald-100 text-emerald-600 border-emerald-300
+                        {% endif %}">
+                        {{ user.role }}
+                    </span>
+                </div>
+
+                <!-- Letter Icon -->
+                <button class="relative group">
+                    <div class="h-10 w-10 rounded-2xl bg-gradient-to-tr from-blue-500 to-indigo-500 
+                                flex items-center justify-center text-white font-bold shadow 
+                                group-hover:shadow-lg transition-all">
+                        {{ user.username|first|upper }}
+                    </div>
+                </button>
+
+                <!-- Logout -->
+                <a href="{% url 'logout' %}"
+                   class="group flex items-center justify-center h-10 w-10 rounded-2xl bg-gray-100 text-gray-500 
+                          hover:bg-red-500 hover:text-white border border-gray-300 transition-all duration-300 shadow-sm"
+                   title="Logout">
+                    <i class="fa-solid fa-power-off text-sm group-hover:rotate-90 transition-transform"></i>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</nav>
+
+<!-- Clock Script -->
+<script>
+    function updateClock() {
+        const c = document.getElementById("clock");
+        if (!c) return;
+
+        const time = new Date().toLocaleTimeString('en-US', {
+            hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+        });
+
+        c.innerText = time;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+</script>

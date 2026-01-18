@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Integrity Report | AI Proctor{% endblock %}
+
+{% block content %}
+
+<div class="max-w-6xl mx-auto space-y-8 pb-20">
+
+<!-- Back Button & Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div class="flex items-center gap-4">
+        <a href="{% url 'teacher_dashboard' %}" class="w-10 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-50 transition">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <div>
+            <h2 class="text-2xl font-black text-gray-900 tracking-tight">System Integrity Logs</h2>
+            <p class="text-sm text-gray-500 font-medium">Complete audit trail of all AI-detected violations.</p>
+        </div>
+    </div>
+    <div class="bg-blue-600 text-white px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest shadow-lg shadow-blue-100">
+        {{ total_logs_count }} Total Violations
+    </div>
+</div>
+
+<!-- Log Table Card -->
+<div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-slate-50 border-b border-gray-100">
+                    <th class="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Student</th>
+                    <th class="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Exam Title</th>
+                    <th class="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Violation Type</th>
+                    <th class="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Object</th>
+                    <th class="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Time Detected</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+                {% for log in all_logs %}
+                <tr class="hover:bg-blue-50/30 transition-colors">
+                    <td class="p-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-xs uppercase">
+                                {{ log.student.username|slice:":2" }}
+                            </div>
+                            <span class="font-bold text-gray-800">{{ log.student.username }}</span>
+                        </div>
+                    </td>
+                    <td class="p-6">
+                        <span class="text-sm font-medium text-gray-600">{{ log.exam.title }}</span>
+                    </td>
+                    <td class="p-6">
+                        <span class="inline-block px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter 
+                            {% if 'phone' in log.object_name %} bg-red-100 text-red-600 {% else %} bg-amber-100 text-amber-600 {% endif %}">
+                            {{ log.warning_type }}
+                        </span>
+                    </td>
+                    <td class="p-6 text-sm font-bold text-slate-400 italic">
+                        {{ log.object_name }}
+                    </td>
+                    <td class="p-6 text-right">
+                        <div class="text-sm font-bold text-gray-700">{{ log.timestamp|date:"M d, Y" }}</div>
+                        <div class="text-[10px] text-gray-400 font-medium">{{ log.timestamp|date:"H:i:s" }}</div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="p-20 text-center">
+                        <div class="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-circle-check text-3xl text-emerald-500"></i>
+                        </div>
+                        <h4 class="text-gray-900 font-bold text-lg">System Clear</h4>
+                        <p class="text-gray-500 text-sm mt-1">No integrity violations have been recorded yet.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Security Note -->
+<div class="bg-slate-900 text-slate-400 p-8 rounded-[2rem] flex items-center gap-6">
+    <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white text-xl">
+        <i class="fa-solid fa-fingerprint"></i>
+    </div>
+    <div class="text-sm">
+        <span class="text-white font-bold block mb-1">Audit Trail Active</span>
+        These logs are immutable and serve as evidence for academic integrity reviews. Timestamps are synced to the central server clock.
+    </div>
+</div>
+
+
+</div>
+{% endblock %} 

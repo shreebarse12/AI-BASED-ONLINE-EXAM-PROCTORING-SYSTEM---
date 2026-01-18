@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Teacher Dashboard{% endblock %}
+
+{% block content %}
+<div class="flex min-h-screen bg-slate-50">
+    <!-- SIDEBAR: Light & Simple -->
+    
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 p-8 overflow-y-auto">
+        <div class="max-w-6xl mx-auto space-y-8">
+            
+            <!-- HEADER -->
+            <div class="flex flex-col md:flex-row justify-between items-center bg-white p-6 rounded-2xl border border-slate-200 shadow-sm gap-4">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800 tracking-tight">Teacher Dashboard</h2>
+                    <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Assessment Management</p>
+                </div>
+                <div class="flex gap-2">
+                    <a href="{% url 'create_exam' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs transition shadow-sm">
+                        + Create Exam
+                    </a>
+                    <a href="{% url 'all_integrity_logs' %}" class="bg-red-50 hover:bg-red-100 text-red-600 px-5 py-2.5 rounded-xl font-bold text-xs transition border border-red-100">
+                        Integrity Logs
+                    </a>
+                </div>
+            </div>
+
+            <!-- STATS SECTION -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1">Total Exams</p>
+                    <h3 class="text-2xl font-black text-slate-800">{{ exams|length }}</h3>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1">AI Proctor Status</p>
+                    <h3 class="text-sm font-bold text-emerald-600 flex items-center">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span> Monitoring Online
+                    </h3>
+                </div>
+            </div>
+
+            <!-- EXAM LIST: Full Width for Clarity -->
+            <div class="space-y-4">
+                <h3 class="font-bold text-slate-400 uppercase tracking-widest text-[10px] px-2">Active Assessment Queue</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for exam in exams %}
+                    <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all group">
+                        <h4 class="font-bold text-slate-800 mb-2 group-hover:text-blue-600 transition-colors">{{ exam.title }}</h4>
+                        <div class="text-[10px] text-gray-400 font-bold mb-4 flex justify-between uppercase tracking-tight">
+                            <span><i class="fa-regular fa-clock mr-1"></i> {{ exam.duration }}m</span>
+                            <span><i class="fa-solid fa-star mr-1"></i> {{ exam.total_marks }} Marks</span>
+                        </div>
+
+                        <div class="flex gap-2 border-t border-slate-50 pt-4">
+                            <a href="{% url 'add_question' exam.id %}" class="flex-1 text-center py-2 bg-slate-50 hover:bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black uppercase transition">
+                                Add Q
+                            </a>
+                            <a href="{% url 'view_questions' exam.id %}" class="flex-1 text-center py-2 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black uppercase transition">
+                                View
+                            </a>
+                            <a href="{% url 'exam_results' exam.id %}" class="flex-1 text-center py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-lg text-[10px] font-black uppercase transition">
+                                Results
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-span-full bg-slate-100/50 p-12 rounded-2xl text-center border-2 border-dashed border-slate-200">
+                        <p class="text-slate-400 text-sm font-bold italic">No active assessments found.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+{% endblock %}

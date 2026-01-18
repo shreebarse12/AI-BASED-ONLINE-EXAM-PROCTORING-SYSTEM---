@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}My Results | AI Proctor{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="bg-white rounded-3xl border border-gray-100 shadow-xl overflow-hidden">
+        
+        <div class="p-8 text-center {% if result.is_terminated %}bg-red-50{% else %}bg-blue-50{% endif %} border-b border-gray-100">
+            <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Performance Summary</h2>
+            <p class="text-gray-500 mt-2 font-medium">Exam: {{ result.exam.title }}</p>
+        </div>
+
+        <div class="p-8 md:p-12">
+            <div class="flex flex-col items-center">
+                
+                <div class="relative flex items-center justify-center mb-8">
+                    <svg class="w-48 h-48 transform -rotate-90">
+                        <circle cx="96" cy="96" r="88" stroke="currentColor" stroke-width="12" fill="transparent" class="text-gray-100" />
+                        <circle cx="96" cy="96" r="88" stroke="currentColor" stroke-width="12" fill="transparent" 
+                            stroke-dasharray="552.92" 
+                            stroke-dashoffset="{{ 552.92|add:552.92 }}" 
+                            class="{% if result.is_terminated %}text-red-500{% else %}text-blue-600{% endif %} transition-all duration-1000 ease-out"
+                            style="stroke-dashoffset: calc(552.92 - (552.92 * {% widthratio result.score result.total_marks 100 %}) / 100);" />
+                    </svg>
+                    
+                    <div class="absolute text-center">
+                        <span class="text-4xl font-black text-gray-900">{% widthratio result.score result.total_marks 100 %}%</span>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Score</p>
+                    </div>
+                </div>
+
+                <div class="w-full max-w-md rounded-2xl p-6 mb-8 text-center transition-all
+                    {% if result.is_terminated %} bg-red-100 border border-red-200 text-red-800 
+                    {% else %} bg-emerald-50 border border-emerald-100 text-emerald-800 {% endif %}">
+                    
+                    <div class="flex items-center justify-center space-x-3 mb-2">
+                        {% if result.is_terminated %}
+                            <i class="fa-solid fa-triangle-exclamation text-2xl animate-bounce"></i>
+                            <h3 class="text-lg font-bold">Exam Terminated</h3>
+                        {% else %}
+                            <i class="fa-solid fa-circle-check text-2xl"></i>
+                            <h3 class="text-lg font-bold">Successfully Completed</h3>
+                        {% endif %}
+                    </div>
+                    
+                    <p class="text-sm opacity-90 leading-relaxed">
+                        {% if result.is_terminated %}
+                            The AI Proctoring system detected multiple violations during your session. Your marks have been flagged for administrative review.
+                        {% else %}
+                            Great job! You completed the assessment within the timeframe. Your performance has been logged in the system.
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 w-full mb-10">
+                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 text-center">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Obtained Marks</p>
+                        <p class="text-2xl font-bold text-gray-800">{{ result.score }}</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 text-center">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Possible</p>
+                        <p class="text-2xl font-bold text-gray-800">{{ result.total_marks }}</p>
+                    </div>
+                </div>
+
+                <a href="{% url 'student_dashboard' %}" class="inline-flex items-center px-8 py-3.5 bg-gray-900 hover:bg-black text-white font-bold rounded-xl transition-all shadow-lg shadow-gray-200 group">
+                    <i class="fa-solid fa-arrow-left mr-3 group-hover:-translate-x-1 transition-transform"></i>
+                    Back to Student Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="px-8 py-4 bg-gray-50 text-center">
+            <p class="text-[11px] text-gray-400 font-medium">
+                <i class="fa-solid fa-shield-halved mr-1"></i> 
+                Results verified by AI Proctoring Security Engine
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

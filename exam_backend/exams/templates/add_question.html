@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Add Question | AI Proctor{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">❓ Add New Question</h2>
+            <p class="text-gray-500 mt-1">Exam: <span class="text-blue-600 font-bold">{{ exam.title }}</span></p>
+        </div>
+        <a href="{% url 'teacher_dashboard' %}" class="text-sm font-bold text-gray-400 hover:text-gray-600 transition-colors">
+            <i class="fa-solid fa-arrow-left mr-1"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <div class="flex-1 space-y-6">
+                <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+                    <label class="block text-sm font-bold text-gray-700 mb-3">Question Description</label>
+                    <textarea 
+                        name="question" 
+                        rows="4" 
+                        required 
+                        class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all placeholder:text-gray-300 bg-gray-50/50"
+                        placeholder="Type your question here..."
+                    ></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% for letter in "abcd"|make_list %}
+                    <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm space-y-3">
+                        <label class="text-xs font-black text-blue-500 uppercase tracking-widest">Option {{ letter|upper }}</label>
+                        <input 
+                            type="text" 
+                            name="{{ letter }}" 
+                            required 
+                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                            placeholder="Choice content..."
+                        >
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="lg:w-80 space-y-6">
+                <div class="sticky top-24 space-y-6">
+                    
+                    <div class="bg-gray-900 rounded-3xl p-6 text-white shadow-xl shadow-blue-100">
+                        <h4 class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-4">Finalize Answer</h4>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">Correct Option</label>
+                                <select name="correct" required class="w-full bg-gray-800 text-white border-gray-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none">
+                                    <option value="" disabled selected>-- Pick One --</option>
+                                    <option value="A">Option A</option>
+                                    <option value="B">Option B</option>
+                                    <option value="C">Option C</option>
+                                    <option value="D">Option D</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2">Marks Weight</label>
+                                <input 
+                                    type="number" 
+                                    name="marks" 
+                                    min="1" 
+                                    value="1" 
+                                    required 
+                                    class="w-full bg-gray-800 text-white border-gray-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm text-center">
+                        <button type="submit" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-100 mb-3">
+                            <i class="fa-solid fa-plus-circle mr-2"></i> Add Question
+                        </button>
+                        <p class="text-[10px] text-gray-400">You can continue adding more questions after saving this one.</p>
+                    </div>
+
+                    <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-2xl">
+                        <div class="flex items-start space-x-3">
+                            <i class="fa-solid fa-wand-magic-sparkles text-emerald-500 mt-1"></i>
+                            <p class="text-[11px] text-emerald-800 leading-relaxed">
+                                <strong>Tip:</strong> Ensure your question is clear. The AI Proctoring system will monitor the time spent on this specific question to detect anomalies.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard | AI Proctor{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">
+                👑 Admin Dashboard
+            </h2>
+            <p class="text-gray-500">
+                Overview of teachers and students in the system.
+            </p>
+        </div>
+
+        <div class="flex gap-3">
+            <a href="/admin/users/user/" target="_blank"
+               class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition shadow-sm">
+                <i class="fa-solid fa-user-plus mr-2"></i> Manage Users
+            </a>
+
+            <button onclick="window.location.reload()"
+                    class="p-2 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">
+                <i class="fa-solid fa-rotate"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            <div class="flex items-center space-x-4">
+                <div class="p-3 bg-blue-50 text-blue-600 rounded-xl">
+                    <i class="fa-solid fa-chalkboard-user text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 font-medium">Total Teachers</p>
+                    <h4 class="text-2xl font-bold">{{ teachers|length }}</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            <div class="flex items-center space-x-4">
+                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+                    <i class="fa-solid fa-user-graduate text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 font-medium">Total Students</p>
+                    <h4 class="text-2xl font-bold">{{ students|length }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teachers Table -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-gray-50 flex justify-between items-center">
+            <h3 class="font-bold text-gray-800 flex items-center">
+                <i class="fa-solid fa-chalkboard-user mr-2 text-blue-500"></i> Teachers
+            </h3>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-gray-50/50 text-gray-400 uppercase text-[10px] font-bold tracking-wider">
+                    <tr>
+                        <th class="px-6 py-4">Username</th>
+                        <th class="px-6 py-4">Joined Date</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    {% for t in teachers %}
+                    <tr class="hover:bg-gray-50/50 transition">
+                        <td class="px-6 py-4 font-medium text-gray-700">
+                            {{ t.username }}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500">
+                            {{ t.date_joined|date:"d M Y" }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="px-6 py-8 text-center text-gray-400">
+                            No teachers found
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Students Table -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-gray-50 flex justify-between items-center">
+            <h3 class="font-bold text-gray-800 flex items-center">
+                <i class="fa-solid fa-graduation-cap mr-2 text-emerald-500"></i> Students
+            </h3>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-gray-50/50 text-gray-400 uppercase text-[10px] font-bold tracking-wider">
+                    <tr>
+                        <th class="px-6 py-4">Username</th>
+                        <th class="px-6 py-4">Joined Date</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    {% for s in students %}
+                    <tr class="hover:bg-gray-50/50 transition">
+                        <td class="px-6 py-4 font-medium text-gray-700">
+                            {{ s.username }}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500">
+                            {{ s.date_joined|date:"d M Y" }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="px-6 py-8 text-center text-gray-400">
+                            No students found
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

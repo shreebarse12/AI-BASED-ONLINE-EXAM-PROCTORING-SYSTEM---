@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Assign Assessment | AI Proctor{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-8 flex items-center justify-between">
+        <div>
+            <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">📌 Assign Assessment</h2>
+            <p class="text-gray-500 mt-1">Link your created exams to specific students to grant them access.</p>
+        </div>
+        <div class="hidden md:block">
+            <i class="fa-solid fa-link-slash text-4xl text-gray-200"></i>
+        </div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800">1. Choose Exam</h3>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Available Assessments</label>
+                    <select name="exam" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1em_1em]" 
+                            style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23CBCCCE%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E');">
+                        <option value="" disabled selected>Select an exam...</option>
+                        {% for exam in exams %}
+                            <option value="{{ exam.id }}">📘 {{ exam.title }} ({{ exam.duration }}m)</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <p class="mt-4 text-[11px] text-gray-400 italic">Only exams you have created are visible here.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800">2. Select Student</h3>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Candidate List</label>
+                    <select name="student" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none appearance-none bg-no-repeat bg-[right_1rem_center] bg-[length:1em_1em]"
+                            style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23CBCCCE%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E');">
+                        <option value="" disabled selected>Select a student...</option>
+                        {% for student in students %}
+                            <option value="{{ student.id }}">👤 {{ student.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <p class="mt-4 text-[11px] text-gray-400 italic">Ensure the student is enrolled in your course batch.</p>
+            </div>
+        </div>
+
+        <div class="mt-10 flex flex-col items-center">
+            <button type="submit" class="group relative px-12 py-4 bg-gray-900 text-white font-bold rounded-2xl transition-all hover:bg-black hover:scale-[1.02] active:scale-[0.98] shadow-xl">
+                <span class="flex items-center">
+                    <i class="fa-solid fa-plus-circle mr-3 text-blue-400 group-hover:rotate-90 transition-transform duration-300"></i>
+                    Confirm Assignment
+                </span>
+            </button>
+            <a href="{% url 'teacher_dashboard' %}" class="mt-4 text-sm font-semibold text-gray-400 hover:text-gray-600 transition-colors">
+                Return to Dashboard
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

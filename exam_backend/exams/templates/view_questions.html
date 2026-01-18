@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Preview: {{ exam.title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto space-y-6">
+    
+    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-100">
+                <i class="fa-solid fa-layer-group text-xl"></i>
+            </div>
+            <div>
+                <h2 class="text-2xl font-extrabold text-gray-900 tracking-tight">{{ exam.title }}</h2>
+                <p class="text-gray-500 text-sm">Reviewing <span class="font-bold text-blue-600">{{ questions|length }}</span> questions</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-3">
+            <a href="{% url 'add_question' exam.id %}" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition-all shadow-md">
+                <i class="fa-solid fa-plus mr-1"></i> Add More
+            </a>
+            <a href="{% url 'teacher_dashboard' %}" class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 text-sm font-bold rounded-xl transition-all">
+                <i class="fa-solid fa-arrow-left mr-1"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="space-y-4">
+        {% for q in questions %}
+        <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden hover:border-blue-200 transition-all">
+            <div class="p-6 bg-gray-50/50 border-b border-gray-50 flex justify-between items-start">
+                <div class="flex gap-4">
+                    <span class="flex-shrink-0 w-8 h-8 bg-gray-900 text-white rounded-lg flex items-center justify-center font-bold text-xs">
+                        {{ forloop.counter }}
+                    </span>
+                    <h3 class="font-bold text-gray-800 leading-relaxed">{{ q.question_text }}</h3>
+                </div>
+                <div class="flex flex-col items-end">
+                    <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest">Weight</span>
+                    <span class="text-sm font-bold text-gray-700">{{ q.marks }} Pts</span>
+                </div>
+            </div>
+
+            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-3 rounded-xl border {% if q.correct_option == 'A' %}bg-emerald-50 border-emerald-200 text-emerald-800{% else %}bg-white border-gray-100 text-gray-600{% endif %} flex items-center">
+                    <span class="w-6 h-6 rounded-md {% if q.correct_option == 'A' %}bg-emerald-500 text-white{% else %}bg-gray-100 text-gray-400{% endif %} flex items-center justify-center text-[10px] font-bold mr-3">A</span>
+                    <span class="text-sm">{{ q.option_a }}</span>
+                </div>
+                <div class="p-3 rounded-xl border {% if q.correct_option == 'B' %}bg-emerald-50 border-emerald-200 text-emerald-800{% else %}bg-white border-gray-100 text-gray-600{% endif %} flex items-center">
+                    <span class="w-6 h-6 rounded-md {% if q.correct_option == 'B' %}bg-emerald-500 text-white{% else %}bg-gray-100 text-gray-400{% endif %} flex items-center justify-center text-[10px] font-bold mr-3">B</span>
+                    <span class="text-sm">{{ q.option_b }}</span>
+                </div>
+                <div class="p-3 rounded-xl border {% if q.correct_option == 'C' %}bg-emerald-50 border-emerald-200 text-emerald-800{% else %}bg-white border-gray-100 text-gray-600{% endif %} flex items-center">
+                    <span class="w-6 h-6 rounded-md {% if q.correct_option == 'C' %}bg-emerald-500 text-white{% else %}bg-gray-100 text-gray-400{% endif %} flex items-center justify-center text-[10px] font-bold mr-3">C</span>
+                    <span class="text-sm">{{ q.option_c }}</span>
+                </div>
+                <div class="p-3 rounded-xl border {% if q.correct_option == 'D' %}bg-emerald-50 border-emerald-200 text-emerald-800{% else %}bg-white border-gray-100 text-gray-600{% endif %} flex items-center">
+                    <span class="w-6 h-6 rounded-md {% if q.correct_option == 'D' %}bg-emerald-500 text-white{% else %}bg-gray-100 text-gray-400{% endif %} flex items-center justify-center text-[10px] font-bold mr-3">D</span>
+                    <span class="text-sm">{{ q.option_d }}</span>
+                </div>
+            </div>
+
+            <div class="px-6 py-3 bg-gray-50/30 border-t border-gray-50 flex justify-end gap-3">
+                <button class="text-[11px] font-bold text-gray-400 hover:text-blue-600 uppercase transition-colors">
+                    <i class="fa-solid fa-pen-to-square mr-1"></i> Edit
+                </button>
+                <button class="text-[11px] font-bold text-gray-400 hover:text-red-500 uppercase transition-colors">
+                    <i class="fa-solid fa-trash-can mr-1"></i> Delete
+                </button>
+            </div>
+        </div>
+        {% empty %}
+        <div class="bg-white rounded-3xl border-2 border-dashed border-gray-200 p-20 text-center">
+            <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-clipboard-question text-3xl text-gray-300"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">No questions yet</h3>
+            <p class="text-gray-500 mt-2 mb-6">Start building your assessment by adding your first question.</p>
+            <a href="{% url 'add_question' exam.id %}" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-100">
+                Create First Question
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

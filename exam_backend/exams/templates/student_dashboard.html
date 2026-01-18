@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Student Portal | AI Proctor{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+
+    <!-- HEADER CARD -->
+    <div class="bg-white p-8 rounded-3xl border border-gray-200 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
+        <div>
+            <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">🎓 Student Dashboard</h2>
+            <p class="text-gray-600 mt-1">
+                Welcome back, 
+                <span class="text-blue-600 font-semibold">{{ user.username }}</span>.
+                Ready for your next assessment?
+            </p>
+        </div>
+
+        <div class="flex items-center space-x-4 bg-blue-50 px-6 py-3 rounded-2xl border border-blue-100 shadow-sm">
+            <i class="fa-solid fa-circle-check text-blue-600 text-xl"></i>
+            <div>
+                <p class="text-xs text-blue-600 font-bold uppercase tracking-wider">Integrity Status</p>
+                <p class="text-sm font-semibold text-gray-700">Verified & Clear</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ASSIGNED EXAMS -->
+    <div>
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                <i class="fa-solid fa-book-bookmark mr-2 text-blue-600"></i>
+                My Assigned Exams
+            </h3>
+            <span class="text-sm text-gray-500">{{ assignments|length }} Total Assignments</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for assign in assignments %}
+            <div class="bg-white border border-gray-200 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all border-b-4
+                {% if assign.submitted %} border-b-emerald-500 {% else %} border-b-amber-500 {% endif %}">
+                
+                <div class="flex justify-between items-start mb-4">
+                    <span class="p-2 bg-gray-100 rounded-lg text-blue-600">
+                        <i class="fa-solid fa-file-lines text-lg"></i>
+                    </span>
+                    <div class="text-right">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Duration</p>
+                        <p class="text-sm font-bold text-gray-700">{{ assign.exam.duration }} mins</p>
+                    </div>
+                </div>
+
+                <h4 class="text-lg font-bold text-gray-900 mb-2 truncate" title="{{ assign.exam.title }}">
+                    {{ assign.exam.title }}
+                </h4>
+
+                <div class="flex items-center mb-6">
+                    {% if assign.submitted %}
+                        <span class="flex items-center text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                            <i class="fa-solid fa-circle-check mr-1.5"></i> Submitted
+                        </span>
+                    {% else %}
+                        <span class="flex items-center text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+                            <i class="fa-solid fa-clock mr-1.5"></i> Pending
+                        </span>
+                    {% endif %}
+                </div>
+
+                {% if not assign.submitted %}
+                    <a href="{% url 'attempt_exam' assign.exam.id %}"
+                       class="block w-full text-center py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl 
+                              transition-all shadow-md shadow-blue-100">
+                        <i class="fa-solid fa-pen-to-square mr-2"></i> Attempt Exam
+                    </a>
+                {% else %}
+                    <a href="{% url 'student_result' assign.exam.id %}"
+                       class="block w-full text-center py-3 bg-gray-900 hover:bg-black text-white font-bold rounded-xl 
+                              transition-all shadow-md shadow-gray-200">
+                        <i class="fa-solid fa-chart-pie mr-2 text-blue-400"></i> View Result
+                    </a>
+                {% endif %}
+            </div>
+
+            {% empty %}
+            <div class="col-span-full py-20 bg-white rounded-3xl border border-gray-200 text-center shadow-sm">
+                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
+                    <i class="fa-solid fa-mug-hot text-3xl text-gray-300"></i>
+                </div>
+                <h4 class="text-gray-900 font-bold text-xl">All caught up!</h4>
+                <p class="text-gray-600 mt-2">No exams are currently assigned to you. Relax or review your notes.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- REMINDER CARD -->
+    <div class="bg-amber-50 border border-amber-200 rounded-3xl p-6 flex items-start space-x-4 shadow-sm">
+        <div class="p-3 bg-white rounded-2xl text-amber-600 shadow-md border border-amber-100">
+            <i class="fa-solid fa-shield-halved text-xl"></i>
+        </div>
+        <div>
+            <h5 class="font-bold text-amber-900">AI Proctoring Reminder</h5>
+            <p class="text-sm text-amber-800 leading-relaxed mt-1">
+                Ensure your camera is active and you are in a well-lit room. Our AI system monitors for tab switching, multiple people, and unrecognized objects to ensure a fair testing environment for everyone.
+            </p>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
