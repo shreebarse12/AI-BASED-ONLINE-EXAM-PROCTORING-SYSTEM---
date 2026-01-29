@@ -48,7 +48,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: python-app
-      
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -56,20 +56,17 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E8BC716CDAB94E9891BA41ACF37B1C0F }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DB1C79DF3E244B1FA85D0E80418CB6CD }}
 
-      # ⭐ Recommended: Stop App During Deployment to Prevent 409 Conflict
-      - name: Stop Azure App Before Deployment
-        run: az webapp stop --name aiexamportal --resource-group aiexamportal_group
+      - name: Stop ongoing Azure deployments
+        run: az webapp stop --name aiexamportal --resource-group <YOUR_RESOURCE_GROUP>
 
-      # ⭐ Wait to avoid SCM restart conflict
-      - name: Wait for SCM to stabilize
+      - name: Wait for SCM to fully stop
         run: sleep 10
 
-      - name: Deploy to Azure Web App (OneDeploy)
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
-        id: deploy-to-webapp
         with:
-          app-name: "aiexamportal"
-          slot-name: "Production"
+          app-name: 'aiexamportal'
+          slot-name: 'Production'
 
-      - name: Start Azure App After Deployment
-        run: az webapp start --name aiexamportal --resource-group aiexamportal_group
+      - name: Start Azure App
+        run: az webapp start --name aiexamportal --resource-group <YOUR_RESOURCE_GROUP>
